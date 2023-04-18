@@ -1,110 +1,134 @@
 #Ballots!
 #(c) Erik's Gadgets
+try:
+    print("Ballots! Event Log")
 
-print("Ballots! Event Log")
+    import PySimpleGUI as sg
 
-import PySimpleGUI as sg
+    sg.theme("LightBrown6")
 
-sg.theme("LightBrown6")
+    sg.Popup("Ballots! [DEMO]\n(c) 2023 Erik's Gadgets")
 
-sg.Popup("Ballots! [DEMO]\n(c) 2023 Erik's Gadgets")
+    import random
 
-import random
+    candidates = []
 
-candidates = []
+    last_names = ["Smith", "Brown", "Jones", "William", "Becker", "Lucason", "Jamison", "Jameson", "Lewie"]
 
-last_names = ["Smith", "Brown", "Jones", "William", "Becker", "Lucason", "Jamison", "Jameson", "Lewie"]
+    first_names = ["John", "Richard", "Henry", "Ron", "Ray", "Dave", "Luka", "Mary", "Ben"]
 
-first_names = ["John", "Richard", "Henry", "Ron", "Ray", "Dave", "Luka", "Mary", "Ben"]
+    no_of_candidates = sg.Window(title="Ballots!", layout=[[sg.Text("Number of Candidates")], [sg.Text("at least 1! no more than 9!")], [sg.Input(3), sg.Button("OK")]])
+
+    while True:
+        event, values = no_of_candidates.Read()
+        if event == "OK" or event == sg.WIN_CLOSED:
+            times = int(values[0])
+            break
+        
+    no_of_candidates.close()
+
+    time = 0
+
+    while time != times:
+        rand_first_name = random.randint(0, len(first_names) - 1)
+        rand_last_name = random.randint(0, len(last_names) - 1)
+        curcandidate = ""
+        curcandidate += first_names[rand_first_name]
+        curcandidate += " "
+        curcandidate += last_names[rand_last_name]
+        del first_names[rand_first_name]
+        del last_names[rand_last_name]
+        print(last_names)
+        print(first_names)
+        print(rand_first_name)
+        print(rand_last_name)
+        candidates.append(curcandidate)
+        time += 1
+
+    print(candidates)
+    radios = []
+
+    candidate_votes = {}
+
+    radiopos = -1
+
+    for i in candidates:
+        radiopos += 1
+        radios.append(sg.Radio(candidates[radiopos], "Candidate"))
+        candidate_votes[str(radiopos + 1)] = 0
 
 
-times = 3
-time = 0
+    ballots = sg.Window(title="Ballots! [DEMO]", layout=[[radios], [sg.Button("Submit")]])
 
-while time != times:
-    rand_first_name = random.randint(0, len(first_names) - 1)
-    rand_last_name = random.randint(0, len(last_names) - 1)
-    curcandidate = ""
-    curcandidate += first_names[rand_first_name]
-    curcandidate += " "
-    curcandidate += last_names[rand_last_name]
-    del first_names[rand_first_name]
-    del last_names[rand_last_name]
-    print(last_names)
-    print(first_names)
-    print(rand_first_name)
-    print(rand_last_name)
-    candidates.append(curcandidate)
-    time += 1
+    while True:
+        
+        event, values = ballots.Read()
+        
+        print(values)
+        print(event)
+        if event == "Submit":
+            for i in range(0, len(radios)):
+                
+                if values[i] == True:
+                
+                    sg.Popup("You voted for: " + str(candidates[i]))
+                    pos = -1
+                    for i in values:
+                        pos += 1
+                        if values[pos] == True:
+                            candidate = pos
+                            candidate_votes[str(candidate + 1)] = 1
+                    ballots.close()
+                    candidates2 = []
+                    pos = -1
+                    for i in candidates:
+                        pos += 1
+                        candidates2.append(candidates[pos])
+                    voters = 250 * len(candidates)
+                    print(candidate_votes)
+                    print(candidates)
+                    pos = 0
+                    for i in candidates2:
+                        pos += 1
+                        candidate_votes[str(pos)] += random.randint(0, voters)
+                        voters -= candidate_votes[str(pos)]
+                    print(candidate_votes)
+                    print(candidates)
+                    voted = []
+                    pos = 0
+                    for i in candidate_votes:
+                        pos += 1
+                        voted.append(candidate_votes[str(pos)])
+                    print(candidate_votes)
+                    print(candidates)
+                    print(voted)
+                    pos = 0
+                    pos2 = -1
+                    for i in candidate_votes:
+                        pos += 1
+                        pos2 += 1
+                        if max(voted) == candidate_votes[str(pos)]:
+                            winner = pos2
+                    pos = -1
+                    categorized = {}
+                    for i in candidates:
+                        pos += 1
+                        print(candidates[pos])
+                        categorized[candidates[pos]] = voted[pos]
+                    sg.Popup("RESULTS:\n" + str(categorized) + "\n" + str(candidates[winner]) + " WON!")
+                    sg.Popup("You Voted: " + str(candidates[candidate]))
+                    if winner == candidate:
+                        sg.Popup("Congratulations! Your Pick Won!\nHope you enjoy living under the new President!")
+                    break
 
-candidates.append(curcandidate)
+        
+        if event == sg.WIN_CLOSED:
+           
+            break
 
-radios = []
+    ballots.close()
+except:
+    import PySimpleGUI as sg
+    sg.Popup("A fatal error has occured. The program will now exit.")
+    exit()
 
-radiopos = -1
-
-for i in candidates:
-    radiopos += 1
-    radios.append(sg.Radio(candidates[radiopos], "Candidate"))
-
-del radios[-1]
-
-ballots = sg.Window(title="Ballots! [DEMO]", layout=[[radios], [sg.Button("Submit")]])
-
-while True:
-    
-    event, values = ballots.Read()
-    
-    print(values)
-    print(event)
-    if event == "Submit":
-        for i in range(0, len(radios)):
-            
-            if values[i] == True:
-            
-                sg.Popup("You voted for: " + str(candidates[i]))
-                if values[0] == True:
-                    candidate = 0
-                    candidate1_votes = 1
-                    candidate2_votes = 0
-                    candidate3_votes = 0
-                if values[1] == True:
-                    candidate = 1
-                    candidate1_votes = 0
-                    candidate2_votes = 1
-                    candidate3_votes = 0
-                if values[2] == True:
-                    candidate1_votes = 0
-                    candidate2_votes = 0
-                    candidate3_votes = 1
-                    candidate = 2
-                ballots.close()
-                candidate1 = candidates[0]
-                candidate2 = candidates[1]
-                candidate3 = candidates[2]
-                voters = 455
-                candidate1_votes += random.randint(0, voters)
-                voters -= candidate1_votes
-                candidate2_votes += random.randint(0, voters)
-                voters -= candidate2_votes
-                candidate3_votes += voters
-                voted = [candidate1_votes, candidate2_votes, candidate3_votes]
-                if max(voted) == candidate1_votes:
-                    winner = 0
-                elif max(voted) == candidate2_votes:
-                    winner = 1
-                else:
-                    winner = 2
-                categorized = {candidate1:candidate1_votes, candidate2:candidate2_votes, candidate3:candidate3_votes}
-                sg.Popup("RESULTS:\n" + str(categorized) + "\n" + str(candidates[winner]) + " WON!")
-                sg.Popup("You Voted: " + str(candidates[candidate]))
-                if winner == candidate:
-                    sg.Popup("Congratulations! Your Pick Won!\nHope you enjoy living under the new President!")
-                break
-
-    
-    if event == sg.WIN_CLOSED:
-       
-        break
-
-ballots.close()
