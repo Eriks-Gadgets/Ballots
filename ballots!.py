@@ -13,11 +13,11 @@ try:
 
     candidates = []
 
-    last_names = ["Smith", "Brown", "Jones", "William", "Becker", "Lucason", "Jamison", "Jameson", "Lewie"]
+    last_names = ["Smith", "Brown", "Jones", "William", "Becker", "Lucason", "Jamison", "Jameson", "Lewie", "Johnson", "Peters", "Barlo"]
 
-    first_names = ["John", "Richard", "Henry", "Ron", "Ray", "Dave", "Luka", "Mary", "Ben"]
+    first_names = ["John", "Richard", "Henry", "Ron", "Ray", "Dave", "Luka", "Mary", "Ben", "Sophia", "Josh", "Frank"]
 
-    no_of_candidates = sg.Window(title="Ballots!", layout=[[sg.Text("Number of Candidates")], [sg.Text("at least 1! no more than 9!")], [sg.Input(3), sg.Button("OK")],[sg.Text("Number of Voters!")], [sg.Text("at least 20! anything less is unstable!")], [sg.Input(300)]])
+    no_of_candidates = sg.Window(title="Ballots!", layout=[[sg.Text("Number of Candidates")], [sg.Text("at least 1! no more than 12!")], [sg.Input(3), sg.Button("OK")],[sg.Text("Number of Voters!")], [sg.Text("at least (num_of_candidates) * 5! anything less is unstable!")], [sg.Input(300)]])
 
     while True:
         event, values = no_of_candidates.Read()
@@ -127,8 +127,8 @@ try:
             break
 
     ballots.close()
-except:
+except Exception as err:
     import PySimpleGUI as sg
-    sg.Popup("A fatal error has occured. The program will now exit.")
+    sg.Popup("FATAL ERROR!!!\n" + str(err))
     exit()
 
